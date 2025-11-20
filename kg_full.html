@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 500px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 500px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "skyblue", "font": {"color": "white"}, "id": "\u203a", "label": "\u203a", "shape": "dot", "title": "\u203a"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at \nleast four weeks", "label": "at \nleast four weeks", "shape": "dot", "title": "at \nleast four weeks"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at least", "label": "at least", "shape": "dot", "title": "at least"}, {"color": "skyblue", "font": {"color": "white"}, "id": "three months", "label": "three months", "shape": "dot", "title": "three months"}, {"color": "skyblue", "font": {"color": "white"}, "id": "StrokeLine", "label": "StrokeLine", "shape": "dot", "title": "StrokeLine"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at least four weeks", "label": "at least four weeks", "shape": "dot", "title": "at least four weeks"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Four weeks", "label": "Four weeks", "shape": "dot", "title": "Four weeks"}, {"color": "skyblue", "font": {"color": "white"}, "id": "three \nmonths", "label": "three \nmonths", "shape": "dot", "title": "three \nmonths"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Assessing Fitness", "label": "Assessing Fitness", "shape": "dot", "title": "Assessing Fitness"}, {"color": "skyblue", "font": {"color": "white"}, "id": "GP", "label": "GP", "shape": "dot", "title": "GP"}, {"color": "skyblue", "font": {"color": "white"}, "id": "four \nweeks", "label": "four \nweeks", "shape": "dot", "title": "four \nweeks"}, {"color": "skyblue", "font": {"color": "white"}, "id": "OT", "label": "OT", "shape": "dot", "title": "OT"}, {"color": "skyblue", "font": {"color": "white"}, "id": "two", "label": "two", "shape": "dot", "title": "two"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Monday to Friday", "label": "Monday to Friday", "shape": "dot", "title": "Monday to Friday"}, {"color": "skyblue", "font": {"color": "white"}, "id": "9am to 5pm", "label": "9am to 5pm", "shape": "dot", "title": "9am to 5pm"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Australian Eastern Time", "label": "Australian Eastern Time", "shape": "dot", "title": "Australian Eastern Time"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Email", "label": "Email", "shape": "dot", "title": "Email"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Australian Capital Territory", "label": "Australian Capital Territory", "shape": "dot", "title": "Australian Capital Territory"}, {"color": "skyblue", "font": {"color": "white"}, "id": "13 22", "label": "13 22", "shape": "dot", "title": "13 22"}, {"color": "skyblue", "font": {"color": "white"}, "id": "81", "label": "81", "shape": "dot", "title": "81"}, {"color": "skyblue", "font": {"color": "white"}, "id": "13", "label": "13", "shape": "dot", "title": "13"}, {"color": "skyblue", "font": {"color": "white"}, "id": "22", "label": "22", "shape": "dot", "title": "22"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1300", "label": "1300", "shape": "dot", "title": "1300"}, {"color": "skyblue", "font": {"color": "white"}, "id": "654 628", "label": "654 628", "shape": "dot", "title": "654 628"}, {"color": "skyblue", "font": {"color": "white"}, "id": "South Australia", "label": "South Australia", "shape": "dot", "title": "South Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "10", "label": "10", "shape": "dot", "title": "10"}, {"color": "skyblue", "font": {"color": "white"}, "id": "84", "label": "84", "shape": "dot", "title": "84"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1300 135", "label": "1300 135", "shape": "dot", "title": "1300 135"}, {"color": "skyblue", "font": {"color": "white"}, "id": "513", "label": "513", "shape": "dot", "title": "513"}, {"color": "skyblue", "font": {"color": "white"}, "id": "71", "label": "71", "shape": "dot", "title": "71"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Western Australia", "label": "Western Australia", "shape": "dot", "title": "Western Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "852 722", "label": "852 722", "shape": "dot", "title": "852 722"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Autumn 2022", "label": "Autumn 2022", "shape": "dot", "title": "Autumn 2022"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2", "label": "2", "shape": "dot", "title": "2"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1800 787 653", "label": "1800 787 653", "shape": "dot", "title": "1800 787 653"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Monday to Friday  \n9am to 5pm", "label": "Monday to Friday  \n9am to 5pm", "shape": "dot", "title": "Monday to Friday  \n9am to 5pm"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Eastern Standard Time", "label": "Eastern Standard Time", "shape": "dot", "title": "Eastern Standard Time"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Australian", "label": "Australian", "shape": "dot", "title": "Australian"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1800", "label": "1800", "shape": "dot", "title": "1800"}, {"color": "skyblue", "font": {"color": "white"}, "id": "787 653", "label": "787 653", "shape": "dot", "title": "787 653"}, {"color": "skyblue", "font": {"color": "white"}, "id": "daily", "label": "daily", "shape": "dot", "title": "daily"}, {"color": "skyblue", "font": {"color": "white"}, "id": "May 2021", "label": "May 2021", "shape": "dot", "title": "May 2021"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at least 1", "label": "at least 1", "shape": "dot", "title": "at least 1"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Stroke", "label": "Stroke", "shape": "dot", "title": "Stroke"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1", "label": "1", "shape": "dot", "title": "1"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Roads", "label": "Roads", "shape": "dot", "title": "Roads"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Maritime Services", "label": "Maritime Services", "shape": "dot", "title": "Maritime Services"}, {"color": "skyblue", "font": {"color": "white"}, "id": "the R MS (Roads \u0026 Maritime Services", "label": "the R MS (Roads \u0026 Maritime Services", "shape": "dot", "title": "the R MS (Roads \u0026 Maritime Services"}, {"color": "skyblue", "font": {"color": "white"}, "id": "3", "label": "3", "shape": "dot", "title": "3"}, {"color": "skyblue", "font": {"color": "white"}, "id": "5", "label": "5", "shape": "dot", "title": "5"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Rehabilitation", "label": "Rehabilitation", "shape": "dot", "title": "Rehabilitation"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Cancellation", "label": "Cancellation", "shape": "dot", "title": "Cancellation"}, {"color": "skyblue", "font": {"color": "white"}, "id": "second", "label": "second", "shape": "dot", "title": "second"}, {"color": "skyblue", "font": {"color": "white"}, "id": "OT Australia", "label": "OT Australia", "shape": "dot", "title": "OT Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "NSW", "label": "NSW", "shape": "dot", "title": "NSW"}, {"color": "skyblue", "font": {"color": "white"}, "id": "20/13  Avenue", "label": "20/13  Avenue", "shape": "dot", "title": "20/13  Avenue"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2112", "label": "2112", "shape": "dot", "title": "2112"}, {"color": "skyblue", "font": {"color": "white"}, "id": "9648", "label": "9648", "shape": "dot", "title": "9648"}, {"color": "skyblue", "font": {"color": "white"}, "id": "3225", "label": "3225", "shape": "dot", "title": "3225"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Victoria) Ltd. Pamphlet", "label": "Victoria) Ltd. Pamphlet", "shape": "dot", "title": "Victoria) Ltd. Pamphlet"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Neurocare Australia", "label": "Neurocare Australia", "shape": "dot", "title": "Neurocare Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "AUSTROADS", "label": "AUSTROADS", "shape": "dot", "title": "AUSTROADS"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Draft Guid", "label": "Draft Guid", "shape": "dot", "title": "Draft Guid"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2021", "label": "2021", "shape": "dot", "title": "2021"}, {"color": "skyblue", "font": {"color": "white"}, "id": "3rd Edition", "label": "3rd Edition", "shape": "dot", "title": "3rd Edition"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Australia", "label": "Australia", "shape": "dot", "title": "Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Austroads \nINC:", "label": "Austroads \nINC:", "shape": "dot", "title": "Austroads \nINC:"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Sydney", "label": "Sydney", "shape": "dot", "title": "Sydney"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Stroke  \n  \n \n \nUsing Electric Vehicles (", "label": "Stroke  \n  \n \n \nUsing Electric Vehicles (", "shape": "dot", "title": "Stroke  \n  \n \n \nUsing Electric Vehicles ("}, {"color": "skyblue", "font": {"color": "white"}, "id": "EV", "label": "EV", "shape": "dot", "title": "EV"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Stroke  \nAcross Australia", "label": "Stroke  \nAcross Australia", "shape": "dot", "title": "Stroke  \nAcross Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "over 445,000", "label": "over 445,000", "shape": "dot", "title": "over 445,000"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Across Australia", "label": "Across Australia", "shape": "dot", "title": "Across Australia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "one", "label": "one", "shape": "dot", "title": "one"}, {"color": "skyblue", "font": {"color": "white"}, "id": "recent years", "label": "recent years", "shape": "dot", "title": "recent years"}, {"color": "skyblue", "font": {"color": "white"}, "id": "One", "label": "One", "shape": "dot", "title": "One"}, {"color": "skyblue", "font": {"color": "white"}, "id": "\u2022 Automatic", "label": "\u2022 Automatic", "shape": "dot", "title": "\u2022 Automatic"}, {"color": "skyblue", "font": {"color": "white"}, "id": "\u2022 Spacious", "label": "\u2022 Spacious", "shape": "dot", "title": "\u2022 Spacious"}, {"color": "skyblue", "font": {"color": "white"}, "id": "half", "label": "half", "shape": "dot", "title": "half"}, {"color": "skyblue", "font": {"color": "white"}, "id": "\u2022 Electronic", "label": "\u2022 Electronic", "shape": "dot", "title": "\u2022 Electronic"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Trigger", "label": "Trigger", "shape": "dot", "title": "Trigger"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2023", "label": "2023", "shape": "dot", "title": "2023"}, {"color": "skyblue", "font": {"color": "white"}, "id": "PO Box 3401", "label": "PO Box 3401", "shape": "dot", "title": "PO Box 3401"}, {"color": "skyblue", "font": {"color": "white"}, "id": "14:57", "label": "14:57", "shape": "dot", "title": "14:57"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1/7\ue8e2", "label": "1/7\ue8e2", "shape": "dot", "title": "1/7\ue8e2"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Temporary", "label": "Temporary", "shape": "dot", "title": "Temporary"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at least 24 hours", "label": "at least 24 hours", "shape": "dot", "title": "at least 24 hours"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2/7Driving", "label": "2/7Driving", "shape": "dot", "title": "2/7Driving"}, {"color": "skyblue", "font": {"color": "white"}, "id": "19/09/2025", "label": "19/09/2025", "shape": "dot", "title": "19/09/2025"}, {"color": "skyblue", "font": {"color": "white"}, "id": "3/7diabetes", "label": "3/7diabetes", "shape": "dot", "title": "3/7diabetes"}, {"color": "skyblue", "font": {"color": "white"}, "id": "dri", "label": "dri", "shape": "dot", "title": "dri"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Transport", "label": "Transport", "shape": "dot", "title": "Transport"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Notify Transport", "label": "Notify Transport", "shape": "dot", "title": "Notify Transport"}, {"color": "skyblue", "font": {"color": "white"}, "id": "medicalunit@transport.nsw.gov.au", "label": "medicalunit@transport.nsw.gov.au", "shape": "dot", "title": "medicalunit@transport.nsw.gov.au"}, {"color": "skyblue", "font": {"color": "white"}, "id": "nsw", "label": "nsw", "shape": "dot", "title": "nsw"}, {"color": "skyblue", "font": {"color": "white"}, "id": "//www", "label": "//www", "shape": "dot", "title": "//www"}, {"color": "skyblue", "font": {"color": "white"}, "id": "13 22 13(tel :", "label": "13 22 13(tel :", "shape": "dot", "title": "13 22 13(tel :"}, {"color": "skyblue", "font": {"color": "white"}, "id": "132213", "label": "132213", "shape": "dot", "title": "132213"}, {"color": "skyblue", "font": {"color": "white"}, "id": "4/7If", "label": "4/7If", "shape": "dot", "title": "4/7If"}, {"color": "skyblue", "font": {"color": "white"}, "id": "daylight hours", "label": "daylight hours", "shape": "dot", "title": "daylight hours"}, {"color": "skyblue", "font": {"color": "white"}, "id": "night", "label": "night", "shape": "dot", "title": "night"}, {"color": "skyblue", "font": {"color": "white"}, "id": "at least 1 year", "label": "at least 1 year", "shape": "dot", "title": "at least 1 year"}, {"color": "skyblue", "font": {"color": "white"}, "id": "10 years", "label": "10 years", "shape": "dot", "title": "10 years"}, {"color": "skyblue", "font": {"color": "white"}, "id": "each year", "label": "each year", "shape": "dot", "title": "each year"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Dementia\nDementia", "label": "Dementia\nDementia", "shape": "dot", "title": "Dementia\nDementia"}, {"color": "skyblue", "font": {"color": "white"}, "id": "6/7You", "label": "6/7You", "shape": "dot", "title": "6/7You"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Ret", "label": "Ret", "shape": "dot", "title": "Ret"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Oxygen", "label": "Oxygen", "shape": "dot", "title": "Oxygen"}, {"color": "skyblue", "font": {"color": "white"}, "id": "See Safety and Rules", "label": "See Safety and Rules", "shape": "dot", "title": "See Safety and Rules"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Fitness", "label": "Fitness", "shape": "dot", "title": "Fitness"}, {"color": "skyblue", "font": {"color": "white"}, "id": "14:56 Worried", "label": "14:56 Worried", "shape": "dot", "title": "14:56 Worried"}, {"color": "skyblue", "font": {"color": "white"}, "id": "1/2\ue8e2", "label": "1/2\ue8e2", "shape": "dot", "title": "1/2\ue8e2"}, {"color": "skyblue", "font": {"color": "white"}, "id": "PDF", "label": "PDF", "shape": "dot", "title": "PDF"}, {"color": "skyblue", "font": {"color": "white"}, "id": "282.64", "label": "282.64", "shape": "dot", "title": "282.64"}, {"color": "skyblue", "font": {"color": "white"}, "id": "KB", "label": "KB", "shape": "dot", "title": "KB"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2/2calling Transport", "label": "2/2calling Transport", "shape": "dot", "title": "2/2calling Transport"}, {"color": "skyblue", "font": {"color": "white"}, "id": "131", "label": "131", "shape": "dot", "title": "131"}, {"color": "skyblue", "font": {"color": "white"}, "id": "131444", "label": "131444", "shape": "dot", "title": "131444"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2022", "label": "2022", "shape": "dot", "title": "2022"}, {"color": "skyblue", "font": {"color": "white"}, "id": "EDITION \nMedical", "label": "EDITION \nMedical", "shape": "dot", "title": "EDITION \nMedical"}, {"color": "skyblue", "font": {"color": "white"}, "id": "State", "label": "State", "shape": "dot", "title": "State"}, {"color": "skyblue", "font": {"color": "white"}, "id": "9", "label": "9", "shape": "dot", "title": "9"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Austroads", "label": "Austroads", "shape": "dot", "title": "Austroads"}, {"color": "skyblue", "font": {"color": "white"}, "id": "www.austroads.com.au   \nAssessing Fitness", "label": "www.austroads.com.au   \nAssessing Fitness", "shape": "dot", "title": "www.austroads.com.au   \nAssessing Fitness"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Second Edition", "label": "Second Edition", "shape": "dot", "title": "Second Edition"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2001", "label": "2001", "shape": "dot", "title": "2001"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Third Edition", "label": "Third Edition", "shape": "dot", "title": "Third Edition"}, {"color": "skyblue", "font": {"color": "white"}, "id": "2003", "label": "2003", "shape": "dot", "title": "2003"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Fourth Edition 2012", "label": "Fourth Edition 2012", "shape": "dot", "title": "Fourth Edition 2012"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Fifth Edition", "label": "Fifth Edition", "shape": "dot", "title": "Fifth Edition"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Sixth Edition 2022\n\u00a9 Austroads Ltd 2022", "label": "Sixth Edition 2022\n\u00a9 Austroads Ltd 2022", "shape": "dot", "title": "Sixth Edition 2022\n\u00a9 Austroads Ltd 2022"}, {"color": "skyblue", "font": {"color": "white"}, "id": "the Copyright Act 1968", "label": "the Copyright Act 1968", "shape": "dot", "title": "the Copyright Act 1968"}, {"color": "skyblue", "font": {"color": "white"}, "id": "National Library", "label": "National Library", "shape": "dot", "title": "National Library"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Hardcopy 978-1-922700-", "label": "Hardcopy 978-1-922700-", "shape": "dot", "title": "Hardcopy 978-1-922700-"}, {"color": "skyblue", "font": {"color": "white"}, "id": "17", "label": "17", "shape": "dot", "title": "17"}, {"color": "skyblue", "font": {"color": "white"}, "id": "978", "label": "978", "shape": "dot", "title": "978"}, {"color": "skyblue", "font": {"color": "white"}, "id": "AP", "label": "AP", "shape": "dot", "title": "AP"}, {"color": "skyblue", "font": {"color": "white"}, "id": "570", "label": "570", "shape": "dot", "title": "570"}, {"color": "skyblue", "font": {"color": "white"}, "id": "George Street", "label": "George Street", "shape": "dot", "title": "George Street"}, {"color": "skyblue", "font": {"color": "white"}, "id": "NSW 2000", "label": "NSW 2000", "shape": "dot", "title": "NSW 2000"}, {"color": "skyblue", "font": {"color": "white"}, "id": "8265 3300", "label": "8265 3300", "shape": "dot", "title": "8265 3300"}, {"color": "skyblue", "font": {"color": "white"}, "id": "NTC", "label": "NTC", "shape": "dot", "title": "NTC"}, {"color": "skyblue", "font": {"color": "white"}, "id": "New Zealand", "label": "New Zealand", "shape": "dot", "title": "New Zealand"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Australasian", "label": "Australasian", "shape": "dot", "title": "Australasian"}, {"color": "skyblue", "font": {"color": "white"}, "id": "National Transport Commission", "label": "National Transport Commission", "shape": "dot", "title": "National Transport Commission"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Commonwealth", "label": "Commonwealth", "shape": "dot", "title": "Commonwealth"}, {"color": "skyblue", "font": {"color": "white"}, "id": "ITMM", "label": "ITMM", "shape": "dot", "title": "ITMM"}, {"color": "skyblue", "font": {"color": "white"}, "id": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee", "label": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee", "shape": "dot", "title": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee"}, {"color": "skyblue", "font": {"color": "white"}, "id": "the Advisory Group", "label": "the Advisory Group", "shape": "dot", "title": "the Advisory Group"}, {"color": "skyblue", "font": {"color": "white"}, "id": "the Medicinal Cannabis Working Group", "label": "the Medicinal Cannabis Working Group", "shape": "dot", "title": "the Medicinal Cannabis Working Group"}]);
+                  edges = new vis.DataSet([{"from": "\u203a", "to": "at \nleast four weeks"}, {"from": "\u203a", "to": "OT"}, {"from": "\u203a", "to": "two"}, {"from": "at least", "to": "three months"}, {"from": "at least", "to": "3"}, {"from": "at least", "to": "10 years"}, {"from": "at least", "to": "2"}, {"from": "three months", "to": "5"}, {"from": "three months", "to": "2"}, {"from": "three months", "to": "2001"}, {"from": "three months", "to": "New Zealand"}, {"from": "three months", "to": "Australia"}, {"from": "StrokeLine", "to": "StrokeLine"}, {"from": "StrokeLine", "to": "Monday to Friday  \n9am to 5pm"}, {"from": "StrokeLine", "to": "Eastern Standard Time"}, {"from": "StrokeLine", "to": "Australian"}, {"from": "StrokeLine", "to": "Australia"}, {"from": "at least four weeks", "to": "2"}, {"from": "at least four weeks", "to": "3"}, {"from": "Four weeks", "to": "three \nmonths"}, {"from": "Assessing Fitness", "to": "Fitness"}, {"from": "Assessing Fitness", "to": "2022"}, {"from": "Assessing Fitness", "to": "Hardcopy 978-1-922700-"}, {"from": "Assessing Fitness", "to": "17"}, {"from": "Assessing Fitness", "to": "PDF"}, {"from": "Assessing Fitness", "to": "978"}, {"from": "Assessing Fitness", "to": "AP"}, {"from": "Assessing Fitness", "to": "9"}, {"from": "Assessing Fitness", "to": "570"}, {"from": "Assessing Fitness", "to": "George Street"}, {"from": "Assessing Fitness", "to": "NSW 2000"}, {"from": "Assessing Fitness", "to": "Australia"}, {"from": "Assessing Fitness", "to": "8265 3300"}, {"from": "GP", "to": "GP"}, {"from": "GP", "to": "Australian"}, {"from": "GP", "to": "second"}, {"from": "GP", "to": "84"}, {"from": "GP", "to": "half"}, {"from": "GP", "to": "one"}, {"from": "GP", "to": "Australia"}, {"from": "GP", "to": "9"}, {"from": "GP", "to": "10"}, {"from": "GP", "to": "1"}, {"from": "GP", "to": "2"}, {"from": "GP", "to": "5"}, {"from": "GP", "to": "3"}, {"from": "GP", "to": "two"}, {"from": "GP", "to": "OT"}, {"from": "GP", "to": "South Australia"}, {"from": "OT", "to": "OT"}, {"from": "OT", "to": "two"}, {"from": "OT", "to": "2"}, {"from": "OT", "to": "84"}, {"from": "OT", "to": "Australia"}, {"from": "two", "to": "at least 24 hours"}, {"from": "two", "to": "10 years"}, {"from": "two", "to": "two"}, {"from": "two", "to": "22"}, {"from": "two", "to": "one"}, {"from": "two", "to": "5"}, {"from": "two", "to": "Australia"}, {"from": "two", "to": "second"}, {"from": "two", "to": "2003"}, {"from": "two", "to": "2"}, {"from": "two", "to": "3"}, {"from": "two", "to": "1"}, {"from": "two", "to": "One"}, {"from": "two", "to": "9"}, {"from": "two", "to": "10"}, {"from": "two", "to": "night"}, {"from": "two", "to": "Australian"}, {"from": "two", "to": "Stroke"}, {"from": "Monday to Friday", "to": "9am to 5pm"}, {"from": "Monday to Friday", "to": "Australian Eastern Time"}, {"from": "9am to 5pm", "to": "Australian Eastern Time"}, {"from": "Australian Capital Territory", "to": "13 22"}, {"from": "Australian Capital Territory", "to": "81"}, {"from": "Australian Capital Territory", "to": "13"}, {"from": "Australian Capital Territory", "to": "22"}, {"from": "Australian Capital Territory", "to": "1300"}, {"from": "Australian Capital Territory", "to": "654 628"}, {"from": "Australian Capital Territory", "to": "South Australia"}, {"from": "Australian Capital Territory", "to": "10"}, {"from": "Australian Capital Territory", "to": "84"}, {"from": "Australian Capital Territory", "to": "1300 135"}, {"from": "Australian Capital Territory", "to": "513"}, {"from": "Australian Capital Territory", "to": "71"}, {"from": "Australian Capital Territory", "to": "Western Australia"}, {"from": "13 22", "to": "81"}, {"from": "13 22", "to": "13"}, {"from": "13 22", "to": "22"}, {"from": "13 22", "to": "1300"}, {"from": "13 22", "to": "654 628"}, {"from": "13 22", "to": "South Australia"}, {"from": "13 22", "to": "10"}, {"from": "13 22", "to": "84"}, {"from": "13 22", "to": "1300 135"}, {"from": "13 22", "to": "513"}, {"from": "13 22", "to": "71"}, {"from": "81", "to": "13"}, {"from": "81", "to": "22"}, {"from": "81", "to": "1300"}, {"from": "81", "to": "654 628"}, {"from": "81", "to": "South Australia"}, {"from": "81", "to": "10"}, {"from": "81", "to": "84"}, {"from": "81", "to": "1300 135"}, {"from": "81", "to": "513"}, {"from": "81", "to": "71"}, {"from": "81", "to": "NSW"}, {"from": "81", "to": "5"}, {"from": "81", "to": "1"}, {"from": "81", "to": "Australian"}, {"from": "13", "to": "22"}, {"from": "13", "to": "13"}, {"from": "13", "to": "1300"}, {"from": "13", "to": "654 628"}, {"from": "13", "to": "South Australia"}, {"from": "13", "to": "10"}, {"from": "13", "to": "84"}, {"from": "13", "to": "1300 135"}, {"from": "13", "to": "513"}, {"from": "13", "to": "71"}, {"from": "13", "to": "Western Australia"}, {"from": "13", "to": "852 722"}, {"from": "13", "to": "Australian"}, {"from": "13", "to": "NSW"}, {"from": "13", "to": "State"}, {"from": "13", "to": "Australia"}, {"from": "13", "to": "Transport"}, {"from": "13", "to": "9"}, {"from": "13", "to": "5"}, {"from": "13", "to": "1"}, {"from": "13", "to": "3"}, {"from": "13", "to": "2"}, {"from": "13", "to": "One"}, {"from": "13", "to": "one"}, {"from": "22", "to": "1300"}, {"from": "22", "to": "654 628"}, {"from": "22", "to": "South Australia"}, {"from": "22", "to": "10"}, {"from": "22", "to": "84"}, {"from": "22", "to": "1300 135"}, {"from": "22", "to": "513"}, {"from": "22", "to": "71"}, {"from": "22", "to": "Australian"}, {"from": "22", "to": "2"}, {"from": "22", "to": "3"}, {"from": "22", "to": "5"}, {"from": "22", "to": "1"}, {"from": "22", "to": "one"}, {"from": "1300", "to": "654 628"}, {"from": "1300", "to": "South Australia"}, {"from": "1300", "to": "10"}, {"from": "1300", "to": "84"}, {"from": "1300", "to": "1300 135"}, {"from": "1300", "to": "513"}, {"from": "1300", "to": "71"}, {"from": "1300", "to": "Western Australia"}, {"from": "1300", "to": "852 722"}, {"from": "1300", "to": "PO Box 3401"}, {"from": "1300", "to": "2112"}, {"from": "1300", "to": "1800"}, {"from": "1300", "to": "1300"}, {"from": "654 628", "to": "South Australia"}, {"from": "654 628", "to": "10"}, {"from": "654 628", "to": "84"}, {"from": "654 628", "to": "1300 135"}, {"from": "654 628", "to": "513"}, {"from": "654 628", "to": "71"}, {"from": "South Australia", "to": "10"}, {"from": "South Australia", "to": "84"}, {"from": "South Australia", "to": "1300 135"}, {"from": "South Australia", "to": "513"}, {"from": "South Australia", "to": "71"}, {"from": "South Australia", "to": "South Australia"}, {"from": "South Australia", "to": "Australian"}, {"from": "South Australia", "to": "2022"}, {"from": "South Australia", "to": "State"}, {"from": "South Australia", "to": "Australia"}, {"from": "South Australia", "to": "Transport"}, {"from": "South Australia", "to": "2"}, {"from": "South Australia", "to": "National Transport Commission"}, {"from": "South Australia", "to": "each year"}, {"from": "South Australia", "to": "17"}, {"from": "South Australia", "to": "5"}, {"from": "10", "to": "84"}, {"from": "10", "to": "1300 135"}, {"from": "10", "to": "513"}, {"from": "10", "to": "71"}, {"from": "10", "to": "3"}, {"from": "10", "to": "1"}, {"from": "10", "to": "5"}, {"from": "10", "to": "2"}, {"from": "10", "to": "9"}, {"from": "10", "to": "One"}, {"from": "10", "to": "10"}, {"from": "10", "to": "second"}, {"from": "10", "to": "Australia"}, {"from": "10", "to": "night"}, {"from": "10", "to": "17"}, {"from": "10", "to": "Australian"}, {"from": "84", "to": "1300 135"}, {"from": "84", "to": "513"}, {"from": "84", "to": "71"}, {"from": "84", "to": "1"}, {"from": "84", "to": "84"}, {"from": "84", "to": "9"}, {"from": "84", "to": "17"}, {"from": "84", "to": "Australian"}, {"from": "84", "to": "3"}, {"from": "84", "to": "2021"}, {"from": "84", "to": "one"}, {"from": "84", "to": "NSW"}, {"from": "84", "to": "5"}, {"from": "1300 135", "to": "513"}, {"from": "1300 135", "to": "71"}, {"from": "1300 135", "to": "Western Australia"}, {"from": "1300 135", "to": "852 722"}, {"from": "1300 135", "to": "State"}, {"from": "1300 135", "to": "Australia"}, {"from": "1300 135", "to": "Transport"}, {"from": "513", "to": "71"}, {"from": "513", "to": "Western Australia"}, {"from": "513", "to": "852 722"}, {"from": "71", "to": "Western Australia"}, {"from": "71", "to": "852 722"}, {"from": "71", "to": "3"}, {"from": "Western Australia", "to": "852 722"}, {"from": "Western Australia", "to": "1800"}, {"from": "Western Australia", "to": "Australian"}, {"from": "Western Australia", "to": "2"}, {"from": "Autumn 2022", "to": "2"}, {"from": "Autumn 2022", "to": "1800 787 653"}, {"from": "2", "to": "1800 787 653"}, {"from": "2", "to": "the R MS (Roads \u0026 Maritime Services"}, {"from": "2", "to": "5"}, {"from": "2", "to": "2021"}, {"from": "2", "to": "1"}, {"from": "2", "to": "3"}, {"from": "2", "to": "9"}, {"from": "2", "to": "Australia"}, {"from": "2", "to": "2"}, {"from": "2", "to": "one"}, {"from": "2", "to": "17"}, {"from": "2", "to": "Australian"}, {"from": "Monday to Friday  \n9am to 5pm", "to": "Eastern Standard Time"}, {"from": "Monday to Friday  \n9am to 5pm", "to": "Australian"}, {"from": "Eastern Standard Time", "to": "Australian"}, {"from": "Australian", "to": "2022"}, {"from": "Australian", "to": "EDITION \nMedical"}, {"from": "Australian", "to": "NTC"}, {"from": "Australian", "to": "New Zealand"}, {"from": "Australian", "to": "National Transport Commission"}, {"from": "Australian", "to": "1"}, {"from": "Australian", "to": "one"}, {"from": "Australian", "to": "daily"}, {"from": "Australian", "to": "5"}, {"from": "Australian", "to": "Australian"}, {"from": "Australian", "to": "Australia"}, {"from": "Australian", "to": "each year"}, {"from": "Australian", "to": "3"}, {"from": "Australian", "to": "2003"}, {"from": "Australian", "to": "One"}, {"from": "Australian", "to": "second"}, {"from": "Australian", "to": "17"}, {"from": "Australian", "to": "2023"}, {"from": "Australian", "to": "9"}, {"from": "1800", "to": "787 653"}, {"from": "daily", "to": "Australia"}, {"from": "daily", "to": "2003"}, {"from": "daily", "to": "5"}, {"from": "daily", "to": "3"}, {"from": "May 2021", "to": "at least 1"}, {"from": "Stroke", "to": "OT Australia"}, {"from": "Stroke", "to": "NSW"}, {"from": "Stroke", "to": "20/13  Avenue"}, {"from": "Stroke", "to": "2112"}, {"from": "Stroke", "to": "9648"}, {"from": "Stroke", "to": "3225"}, {"from": "Stroke", "to": "Victoria) Ltd. Pamphlet"}, {"from": "Stroke", "to": "3"}, {"from": "1", "to": "National Transport Commission"}, {"from": "1", "to": "1"}, {"from": "1", "to": "one"}, {"from": "1", "to": "3"}, {"from": "1", "to": "5"}, {"from": "1", "to": "9"}, {"from": "1", "to": "2021"}, {"from": "1", "to": "Australia"}, {"from": "1", "to": "17"}, {"from": "1", "to": "2003"}, {"from": "Roads", "to": "Maritime Services"}, {"from": "Maritime Services", "to": "Australia"}, {"from": "Maritime Services", "to": "2003"}, {"from": "3", "to": "5"}, {"from": "3", "to": "9"}, {"from": "3", "to": "3"}, {"from": "3", "to": "one"}, {"from": "3", "to": "17"}, {"from": "3", "to": "Australia"}, {"from": "3", "to": "2022"}, {"from": "5", "to": "5"}, {"from": "5", "to": "9"}, {"from": "5", "to": "one"}, {"from": "5", "to": "17"}, {"from": "5", "to": "Australia"}, {"from": "5", "to": "second"}, {"from": "5", "to": "2001"}, {"from": "second", "to": "2021"}, {"from": "second", "to": "Australia"}, {"from": "second", "to": "2001"}, {"from": "second", "to": "one"}, {"from": "OT Australia", "to": "NSW"}, {"from": "OT Australia", "to": "20/13  Avenue"}, {"from": "OT Australia", "to": "2112"}, {"from": "OT Australia", "to": "9648"}, {"from": "OT Australia", "to": "3225"}, {"from": "OT Australia", "to": "Victoria) Ltd. Pamphlet"}, {"from": "NSW", "to": "20/13  Avenue"}, {"from": "NSW", "to": "2112"}, {"from": "NSW", "to": "9648"}, {"from": "NSW", "to": "3225"}, {"from": "NSW", "to": "Victoria) Ltd. Pamphlet"}, {"from": "NSW", "to": "Transport"}, {"from": "NSW", "to": "2022"}, {"from": "NSW", "to": "Australia"}, {"from": "NSW", "to": "19/09/2025"}, {"from": "NSW", "to": "Fitness"}, {"from": "NSW", "to": "//www"}, {"from": "20/13  Avenue", "to": "2112"}, {"from": "20/13  Avenue", "to": "9648"}, {"from": "20/13  Avenue", "to": "3225"}, {"from": "20/13  Avenue", "to": "Victoria) Ltd. Pamphlet"}, {"from": "2112", "to": "9648"}, {"from": "2112", "to": "3225"}, {"from": "2112", "to": "Victoria) Ltd. Pamphlet"}, {"from": "2112", "to": "2023"}, {"from": "2112", "to": "PO Box 3401"}, {"from": "9648", "to": "3225"}, {"from": "9648", "to": "Victoria) Ltd. Pamphlet"}, {"from": "3225", "to": "Victoria) Ltd. Pamphlet"}, {"from": "AUSTROADS", "to": "Draft Guid"}, {"from": "AUSTROADS", "to": "2021"}, {"from": "Draft Guid", "to": "2021"}, {"from": "Australia", "to": "National Library"}, {"from": "Australia", "to": "2022"}, {"from": "Australia", "to": "Hardcopy 978-1-922700-"}, {"from": "Australia", "to": "17"}, {"from": "Australia", "to": "PDF"}, {"from": "Australia", "to": "978"}, {"from": "Australia", "to": "AP"}, {"from": "Australia", "to": "9"}, {"from": "Australia", "to": "570"}, {"from": "Australia", "to": "George Street"}, {"from": "Australia", "to": "NSW 2000"}, {"from": "Australia", "to": "8265 3300"}, {"from": "Australia", "to": "New Zealand"}, {"from": "Australia", "to": "Australia"}, {"from": "Australia", "to": "State"}, {"from": "Australia", "to": "Transport"}, {"from": "Australia", "to": "National Transport Commission"}, {"from": "Australia", "to": "one"}, {"from": "Australia", "to": "2003"}, {"from": "Australia", "to": "each year"}, {"from": "Australia", "to": "2001"}, {"from": "Australia", "to": "Australasian"}, {"from": "Austroads \nINC:", "to": "Sydney"}, {"from": "Stroke  \n  \n \n \nUsing Electric Vehicles (", "to": "EV"}, {"from": "Stroke  \n  \n \n \nUsing Electric Vehicles (", "to": "Stroke  \nAcross Australia"}, {"from": "Stroke  \n  \n \n \nUsing Electric Vehicles (", "to": "over 445,000"}, {"from": "EV", "to": "Stroke  \nAcross Australia"}, {"from": "EV", "to": "over 445,000"}, {"from": "Stroke  \nAcross Australia", "to": "over 445,000"}, {"from": "over 445,000", "to": "Across Australia"}, {"from": "one", "to": "9"}, {"from": "one", "to": "one"}, {"from": "one", "to": "19/09/2025"}, {"from": "One", "to": "17"}, {"from": "2023", "to": "PO Box 3401"}, {"from": "2023", "to": "2022"}, {"from": "14:57", "to": "1/7\ue8e2"}, {"from": "14:57", "to": "at least 24 hours"}, {"from": "14:57", "to": "19/09/2025"}, {"from": "14:57", "to": "4/7If"}, {"from": "19/09/2025", "to": "14:56 Worried"}, {"from": "19/09/2025", "to": "//www"}, {"from": "19/09/2025", "to": "Fitness"}, {"from": "19/09/2025", "to": "Transport"}, {"from": "dri", "to": "//www"}, {"from": "Transport", "to": "State"}, {"from": "Transport", "to": "Fitness"}, {"from": "Transport", "to": "//www"}, {"from": "Notify Transport", "to": "medicalunit@transport.nsw.gov.au"}, {"from": "//www", "to": "PDF"}, {"from": "//www", "to": "282.64"}, {"from": "//www", "to": "KB"}, {"from": "13 22 13(tel :", "to": "132213"}, {"from": "13 22 13(tel :", "to": "2/2calling Transport"}, {"from": "132213", "to": "2/2calling Transport"}, {"from": "daylight hours", "to": "night"}, {"from": "daylight hours", "to": "daylight hours"}, {"from": "daylight hours", "to": "National Transport Commission"}, {"from": "10 years", "to": "each year"}, {"from": "PDF", "to": "282.64"}, {"from": "PDF", "to": "KB"}, {"from": "PDF", "to": "2022"}, {"from": "PDF", "to": "Hardcopy 978-1-922700-"}, {"from": "PDF", "to": "17"}, {"from": "PDF", "to": "978"}, {"from": "PDF", "to": "AP"}, {"from": "PDF", "to": "9"}, {"from": "PDF", "to": "570"}, {"from": "PDF", "to": "George Street"}, {"from": "PDF", "to": "NSW 2000"}, {"from": "PDF", "to": "8265 3300"}, {"from": "PDF", "to": "PDF"}, {"from": "282.64", "to": "KB"}, {"from": "131", "to": "131444"}, {"from": "2022", "to": "EDITION \nMedical"}, {"from": "2022", "to": "State"}, {"from": "2022", "to": "9"}, {"from": "2022", "to": "Hardcopy 978-1-922700-"}, {"from": "2022", "to": "17"}, {"from": "2022", "to": "978"}, {"from": "2022", "to": "AP"}, {"from": "2022", "to": "570"}, {"from": "2022", "to": "George Street"}, {"from": "2022", "to": "NSW 2000"}, {"from": "2022", "to": "8265 3300"}, {"from": "2022", "to": "NTC"}, {"from": "2022", "to": "New Zealand"}, {"from": "EDITION \nMedical", "to": "State"}, {"from": "EDITION \nMedical", "to": "9"}, {"from": "EDITION \nMedical", "to": "NTC"}, {"from": "EDITION \nMedical", "to": "New Zealand"}, {"from": "State", "to": "9"}, {"from": "State", "to": "State"}, {"from": "State", "to": "National Transport Commission"}, {"from": "9", "to": "Hardcopy 978-1-922700-"}, {"from": "9", "to": "17"}, {"from": "9", "to": "978"}, {"from": "9", "to": "AP"}, {"from": "9", "to": "570"}, {"from": "9", "to": "George Street"}, {"from": "9", "to": "NSW 2000"}, {"from": "9", "to": "8265 3300"}, {"from": "Austroads", "to": "www.austroads.com.au   \nAssessing Fitness"}, {"from": "Austroads", "to": "Second Edition"}, {"from": "Austroads", "to": "2001"}, {"from": "Austroads", "to": "Third Edition"}, {"from": "Austroads", "to": "2003"}, {"from": "www.austroads.com.au   \nAssessing Fitness", "to": "Second Edition"}, {"from": "www.austroads.com.au   \nAssessing Fitness", "to": "2001"}, {"from": "www.austroads.com.au   \nAssessing Fitness", "to": "Third Edition"}, {"from": "www.austroads.com.au   \nAssessing Fitness", "to": "2003"}, {"from": "Second Edition", "to": "2001"}, {"from": "Second Edition", "to": "Third Edition"}, {"from": "Second Edition", "to": "2003"}, {"from": "2001", "to": "Third Edition"}, {"from": "2001", "to": "2003"}, {"from": "Third Edition", "to": "2003"}, {"from": "2003", "to": "Commonwealth"}, {"from": "2003", "to": "2003"}, {"from": "Fourth Edition 2012", "to": "Fifth Edition"}, {"from": "Hardcopy 978-1-922700-", "to": "17"}, {"from": "Hardcopy 978-1-922700-", "to": "978"}, {"from": "Hardcopy 978-1-922700-", "to": "AP"}, {"from": "Hardcopy 978-1-922700-", "to": "570"}, {"from": "Hardcopy 978-1-922700-", "to": "George Street"}, {"from": "Hardcopy 978-1-922700-", "to": "NSW 2000"}, {"from": "Hardcopy 978-1-922700-", "to": "8265 3300"}, {"from": "17", "to": "978"}, {"from": "17", "to": "AP"}, {"from": "17", "to": "570"}, {"from": "17", "to": "George Street"}, {"from": "17", "to": "NSW 2000"}, {"from": "17", "to": "8265 3300"}, {"from": "17", "to": "17"}, {"from": "978", "to": "AP"}, {"from": "978", "to": "570"}, {"from": "978", "to": "George Street"}, {"from": "978", "to": "NSW 2000"}, {"from": "978", "to": "8265 3300"}, {"from": "AP", "to": "570"}, {"from": "AP", "to": "George Street"}, {"from": "AP", "to": "NSW 2000"}, {"from": "AP", "to": "8265 3300"}, {"from": "570", "to": "George Street"}, {"from": "570", "to": "NSW 2000"}, {"from": "570", "to": "8265 3300"}, {"from": "George Street", "to": "NSW 2000"}, {"from": "George Street", "to": "8265 3300"}, {"from": "NSW 2000", "to": "8265 3300"}, {"from": "NTC", "to": "New Zealand"}, {"from": "NTC", "to": "National Transport Commission"}, {"from": "NTC", "to": "Commonwealth"}, {"from": "NTC", "to": "ITMM"}, {"from": "NTC", "to": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee"}, {"from": "NTC", "to": "the Advisory Group"}, {"from": "NTC", "to": "the Medicinal Cannabis Working Group"}, {"from": "New Zealand", "to": "New Zealand"}, {"from": "Commonwealth", "to": "ITMM"}, {"from": "Commonwealth", "to": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee"}, {"from": "ITMM", "to": "the Infrastructure and Transport Senior Officials\u2019 \nCommittee"}, {"from": "the Advisory Group", "to": "the Medicinal Cannabis Working Group"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
