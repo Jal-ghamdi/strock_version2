@@ -63,11 +63,15 @@ vector_store = load_local_vector_store()
 
 @st.cache_resource
 def load_kg_and_map():
-    nlp_local = spacy.load("en_core_web_sm")
+    # Initialize Spacy NLP pipeline
+    import spacy
+    nlp_local = spacy.load("en_core_web_sm")  # <-- Load the model here
 
+    # Load your saved graph
     with open("kg.gpickle_local1", "rb") as f:
         G = pickle.load(f)
 
+    # Load your chunk map
     with open("chunk_map_local1.json", "r", encoding="utf-8") as f:
         chunk_map_local = json.load(f)
 
