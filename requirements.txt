@@ -13,13 +13,12 @@ langgraph
 
 # Embeddings & vector store
 sentence-transformers
-faiss-cpu
+chromadb
 
 # NLP
 spacy==3.7.5
 thinc==8.2.4
 
-# Chroma / optional - if you want to switch later
-# chromadb
-
-# Model downloads handled via setup.sh
+# Core dependencies
+einops
+numpy==1.26.4
