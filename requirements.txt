@@ -10,11 +10,7 @@ langchain-groq
 langgraph
 
 sentence-transformers
-faiss-cpu
-
-audio-recorder-streamlit
-SpeechRecognition
-pydub
+chromadb
 
 spacy==3.7.5
 thinc==8.2.4
@@ -22,3 +18,4 @@ en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_
 
 einops
 numpy==1.26.4
+pyvis
